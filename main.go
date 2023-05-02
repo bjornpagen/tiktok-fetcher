@@ -28,7 +28,7 @@ func init() {
 	}
 }
 
-var subCommands = []string{"add", "update", "fetch"}
+var subCommands = []string{"add", "update", "fetch", "remove"}
 
 func formatSubcommands(s []string) string {
 	var out string
@@ -62,6 +62,8 @@ func main() {
 		err = update(s)
 	case "fetch":
 		err = fetch(s)
+	case "remove":
+		err = remove(s)
 	default:
 		usage()
 	}
@@ -78,6 +80,19 @@ func add(s *server.Server) error {
 	}
 	username := os.Args[2]
 	if err := s.AddUsername(username); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func remove(s *server.Server) error {
+	if len(os.Args) < 3 {
+		println("You need to specify a username")
+		return fmt.Errorf("no username specified")
+	}
+	username := os.Args[2]
+	if err := s.RemoveUsername(username); err != nil {
 		return err
 	}
 
